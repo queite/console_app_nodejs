@@ -89,12 +89,23 @@ const populationSum = require("./utils/populationSum");
     // });
     // console.log("result1 >>>", result1);
 
-    //exemplo select
-    const result2 = await db[DATABASE_SCHEMA].api_data.find({
-      is_active: true,
-    });
+    // exemplo select
+    // const result2 = await db[DATABASE_SCHEMA].api_data.find({
+    //   is_active: true,
+    // });
     // console.log("result2 >>>", result2);
+
+    // Somatório no banco
+    const selectedPopulation = await db[DATABASE_SCHEMA].api_data.where(
+      "doc_record ->> 'Year' BETWEEN '2018' AND '2020'"
+    );
+    const docRecord = selectedPopulation.map((dt) => dt.doc_record);
+
     console.log("Em memória", populationSum(data));
+    console.log("SELECT inline no nodejs", populationSum(docRecord));
+
+    // Limpa banco
+    await db[DATABASE_SCHEMA].api_data.destroy({ is_active: true });
   } catch (e) {
     console.log(e.message);
   } finally {
