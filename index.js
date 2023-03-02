@@ -2,6 +2,7 @@ const { DATABASE_SCHEMA, DATABASE_URL, SHOW_PG_MONITOR } = require("./config");
 const massive = require("massive");
 const monitor = require("pg-monitor");
 const getData = require("./utils/getData");
+const populationSum = require("./utils/populationSum");
 
 // Call start
 (async () => {
@@ -69,7 +70,7 @@ const getData = require("./utils/getData");
 
   try {
     await migrationUp();
-    //insert data in db
+    //insere dados no db
     const data = await getData();
 
     const db_data = data.map((dt) => {
@@ -92,7 +93,8 @@ const getData = require("./utils/getData");
     const result2 = await db[DATABASE_SCHEMA].api_data.find({
       is_active: true,
     });
-    console.log("result2 >>>", result2);
+    // console.log("result2 >>>", result2);
+    console.log("Em memória", populationSum(data));
   } catch (e) {
     console.log(e.message);
   } finally {
